@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
+import 'pages/product.dart';
 
 class Products extends StatelessWidget {
-  final List<String> products;
+  final List<Map<String, dynamic>> products;
 
   Products([this.products = const []]);
 
   Widget _buildProductItem(BuildContext context, int index) {
     return Card(
       child: Column(children: <Widget>[
-        Image.asset('assets/food.jpg'),
-        Text(products[index])
+        Image.asset(products[index]['image']),
+        Text(products[index]['title']),
+        ButtonBar(
+          alignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FlatButton(
+              child: Text("details"),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ProductPage(products[index]))),
+            )
+          ],
+        )
       ]),
     );
   }
@@ -25,7 +38,7 @@ class Products extends StatelessWidget {
         itemBuilder: _buildProductItem,
         itemCount: products.length,
       );
-    } 
+    }
 
     return prod;
   }
