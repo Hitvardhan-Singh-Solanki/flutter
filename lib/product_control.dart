@@ -7,7 +7,6 @@ class ProductControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return RaisedButton(
       child: Text('Add Product'),
       onPressed: () {
