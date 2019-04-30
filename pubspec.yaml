@@ -41,6 +41,13 @@ flutter:
   uses-material-design: true 
   assets:
     - assets/food.jpg
+    - assets/background.jpg
+  fonts:
+    - family: Oswald
+      fonts:
+        - asset: assets/Oswald-bold.ttf
+          weight: 700
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

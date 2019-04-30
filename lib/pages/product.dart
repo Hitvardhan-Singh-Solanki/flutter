@@ -6,32 +6,6 @@ class ProductPage extends StatelessWidget {
 
   ProductPage(this.product);
 
-  _showWarningDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Are you Sure?'),
-            content: Text('This cannot be undone'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('DISCARD'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              FlatButton(
-                child: Text('CONTINUE'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context, true);
-                },
-              )
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -45,15 +19,38 @@ class ProductPage extends StatelessWidget {
             Image.asset(product['image']),
             Container(
               padding: EdgeInsets.all(10.0),
-              child: Text(product['title']),
-            ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                child: Text('DELETE'),
-                onPressed: () => _showWarningDialog(context),
+              child: Text(
+                product['title'],
+                style: TextStyle(fontSize: 26.0, fontFamily: 'Oswald'),
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Union Square, SF',
+                  style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text(
+                    '|',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                Text(
+                  '\$ ' + product['price'].toString(),
+                  style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
+                )
+              ],
+            ),
+            Container(
+              child: Text(
+                product['description'],
+                textAlign: TextAlign.center,
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
+            )
           ],
         ),
       ),

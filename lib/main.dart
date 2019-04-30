@@ -4,7 +4,12 @@ import 'pages/products_admin.dart';
 import 'pages/products.dart';
 import 'pages/product.dart';
 
-void main() => runApp(MyApp());
+// import 'package:flutter/rendering.dart';
+
+void main() {
+  // debugPaintSizeEnabled = true;
+  runApp(MyApp()); 
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -35,7 +40,6 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.deepOrange,
           accentColor: Colors.deepPurple,
           brightness: Brightness.light),
-      // home: AuthPage(),
       routes: {
         '/': (BuildContext context) =>
             AuthPage(),

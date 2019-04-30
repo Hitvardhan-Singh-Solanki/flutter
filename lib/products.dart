@@ -9,15 +9,57 @@ class Products extends StatelessWidget {
     return Card(
       child: Column(children: <Widget>[
         Image.asset(products[index]['image']),
-        Text(products[index]['title']),
+        Container(
+          margin: EdgeInsets.only(top: 10.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                products[index]['title'],
+                style: TextStyle(
+                    fontSize: 26.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Oswald'),
+              ),
+              SizedBox(
+                width: 8.0,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
+                child: Text(
+                  '\$ ' + products[index]['price'].toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).accentColor,
+                    borderRadius: BorderRadius.circular(5.0)),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
+          child: Text('Union Square, SF'),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+              border: Border.all(color: Colors.grey, width: 1.0)),
+        ),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(
-              child: Text("details"),
-              onPressed: () => Navigator
-              .pushNamed<bool>(context, '/product/'+index.toString())
-            )
+            IconButton(
+                // child: Text('Details'),
+                icon: Icon(Icons.info_outline),
+                color: Theme.of(context).accentColor,
+                onPressed: () => Navigator.pushNamed<bool>(
+                    context, '/product/' + index.toString())),
+            IconButton(
+                // child: Text('Details'),
+                icon: Icon(Icons.favorite_border),
+                color: Colors.redAccent,
+                onPressed: () => Navigator.pushNamed<bool>(
+                    context, '/product/' + index.toString()))
           ],
         )
       ]),
