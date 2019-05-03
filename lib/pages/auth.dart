@@ -8,9 +8,13 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  String username;
-  String password;
-  bool _acceptTerms = false;
+  bool _isButtonDisable = true;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final Map<String, dynamic> _authMap = {
+    'username': null,
+    'password': null,
+    'acceptTerms': false
+  };
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -22,45 +26,56 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildUsernameTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(
           labelText: 'Username', filled: true, fillColor: Colors.white),
       keyboardType: TextInputType.emailAddress,
-      onChanged: (String val) {
-        setState(() {
-          username = val;
-        });
+      validator: (String email) {
+        if (email.isEmpty ||
+            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(email)) {
+          return 'email is required and should be of type sample@email.com';
+        }
+      },
+      onSaved: (String val) {
+        _authMap['username'] = val;
       },
     );
   }
 
   Widget _buildPasswordTextField() {
-    return TextField(
-      decoration: InputDecoration(
-          labelText: 'Password', filled: true, fillColor: Colors.white),
-      obscureText: true,
-      onChanged: (String val) {
-        setState(() {
-          password = val;
+    return TextFormField(
+        decoration: InputDecoration(
+            labelText: 'Password', filled: true, fillColor: Colors.white),
+        obscureText: true,
+        onSaved: (String val) {
+          _authMap['password'] = val;
+        },
+        validator: (String password) {
+          if (password.isEmpty) {
+            return 'Password is required';
+          }
         });
-      },
-    );
   }
 
   Widget _buildAcceptSwitch() {
     return SwitchListTile(
       onChanged: (bool value) {
         setState(() {
-          _acceptTerms = value;
+          _authMap['acceptTerms'] = value;
+          _isButtonDisable = !_authMap['acceptTerms'];
         });
       },
-      value: _acceptTerms,
+      value: _authMap['acceptTerms'],
       title: Text('Accept Terms'),
     );
   }
 
   void _submitForm() {
-    // if (username == 'admin' && username == 'admin')
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
     Navigator.pushReplacementNamed(context, '/products');
   }
 
@@ -81,23 +96,26 @@ class _AuthPageState extends State<AuthPage> {
           child: SingleChildScrollView(
             child: Container(
               width: targetWidht * 0.8,
-              child: Column(
-                children: <Widget>[
-                  _buildUsernameTextField(),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  _buildPasswordTextField(),
-                  _buildAcceptSwitch(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  RaisedButton(
-                    child: Text('LOGIN'),
-                    textColor: Colors.white,
-                    onPressed: _submitForm,
-                  ),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    _buildUsernameTextField(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildPasswordTextField(),
+                    _buildAcceptSwitch(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    RaisedButton(
+                      child: Text('LOGIN'),
+                      textColor: Colors.white,
+                      onPressed: _isButtonDisable ? null : _submitForm,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
