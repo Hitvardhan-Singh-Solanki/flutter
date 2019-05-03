@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'product_create.dart';
 import '../models/product.dart';
+import '../scoped-models/products.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ProductListPage extends StatelessWidget {
   final List<Product> products;
@@ -10,22 +12,22 @@ class ProductListPage extends StatelessWidget {
   ProductListPage(this.products, this.updateProduct, this.delProducts);
 
   Widget _buildEditButton(BuildContext context, int index) {
-    return IconButton(
-      icon: Icon(Icons.edit),
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return ProductCreatePage(
-                product: products[index],
-                productIndex: index,
-                updateProduct: updateProduct,
-              );
-            },
-          ),
-        );
-      },
-    );
+    return ScopedModelDescendant<ProductsModel>(
+        builder: (BuildContext context, Widget child, ProductsModel model) {
+      return IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          model.selectProduct(index);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return ProductCreatePage();
+              },
+            ),
+          );
+        },
+      );
+    });
   }
 
   @override
