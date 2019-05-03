@@ -88,25 +88,30 @@ class _ProductCreateState extends State<ProductCreatePage> {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     final double targetPadding = deviceWidth - targetWidth;
-    return Container(
-      margin: EdgeInsets.all(20.0),
-      child: Form(
-        key: _fromKey,
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
-          children: <Widget>[
-            _buildTitleTextField(),
-            _buildDescTextField(),
-            _buildPriceTextField(),
-            SizedBox(
-              height: 10.0,
-            ),
-            RaisedButton(
-              textColor: Colors.white,
-              child: Text("save"),
-              onPressed: _onButtonPressHanlder,
-            )
-          ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        margin: EdgeInsets.all(20.0),
+        child: Form(
+          key: _fromKey,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
+            children: <Widget>[
+              _buildTitleTextField(),
+              _buildDescTextField(),
+              _buildPriceTextField(),
+              SizedBox(
+                height: 10.0,
+              ),
+              RaisedButton(
+                textColor: Colors.white,
+                child: Text("save"),
+                onPressed: _onButtonPressHanlder,
+              )
+            ],
+          ),
         ),
       ),
     );
