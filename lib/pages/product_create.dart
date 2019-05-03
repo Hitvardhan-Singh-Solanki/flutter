@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import './../widgets/helpers/ensure-visible.dart';
 
 class ProductCreatePage extends StatefulWidget {
   final Function addProduct;
+  final Function updateProduct;
+  final Map<String, dynamic> product;
+  final int productIndex;
 
-  ProductCreatePage(this.addProduct);
+  ProductCreatePage(
+      {this.addProduct, this.product, this.updateProduct, this.productIndex});
 
   @override
   State<StatefulWidget> createState() {
@@ -13,55 +18,75 @@ class ProductCreatePage extends StatefulWidget {
 
 class _ProductCreateState extends State<ProductCreatePage> {
   final Map<String, dynamic> _formData = {
-    'title' : null,
-    'description' : null,
+    'title': null,
+    'description': null,
     'price': 0.0,
-    'image' : 'assets/food.jpg'
+    'image': 'assets/food.jpg'
   };
   final GlobalKey<FormState> _fromKey = GlobalKey<FormState>();
+  final FocusNode _titleFocusNode = new FocusNode();
+  final FocusNode _descFocusNode = new FocusNode();
+  final FocusNode _priceFocusNode = new FocusNode();
 
   Widget _buildTitleTextField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Product title'),
-      onSaved: (String value) {
+    return EnsureVisibleWhenFocused(
+      focusNode: _titleFocusNode,
+      child: TextFormField(
+        focusNode: _titleFocusNode,
+        decoration: InputDecoration(labelText: 'Product title'),
+        onSaved: (String value) {
           _formData['title'] = value;
-      },
-      validator: (String value) {
-        if (value.isEmpty || value.length < 5) {
-          return 'Title is required and should be 5+ chars long';
-        }
-      },
+        },
+        initialValue: widget.product == null ? '' : widget.product['title'],
+        validator: (String value) {
+          if (value.isEmpty || value.length < 5) {
+            return 'Title is required and should be 5+ chars long';
+          }
+        },
+      ),
     );
   }
 
   Widget _buildDescTextField() {
-    return TextFormField(
-      onSaved: (String value) {
+    return EnsureVisibleWhenFocused(
+      focusNode: _descFocusNode,
+      child: TextFormField(
+        focusNode: _descFocusNode,
+        onSaved: (String value) {
           _formData['description'] = value;
-      },
-      validator: (String value) {
-        if (value.isEmpty || value.length < 10) {
-          return 'Description is required and should be 10+ chars long';
-        }
-      },
-      decoration: InputDecoration(labelText: 'Product Description'),
-      maxLines: 4,
+        },
+        initialValue:
+            widget.product == null ? '' : widget.product['description'],
+        validator: (String value) {
+          if (value.isEmpty || value.length < 10) {
+            return 'Description is required and should be 10+ chars long';
+          }
+        },
+        decoration: InputDecoration(labelText: 'Product Description'),
+        maxLines: 4,
+      ),
     );
   }
 
   Widget _buildPriceTextField() {
-    return TextFormField(
-      onSaved: (String value) {
+    return EnsureVisibleWhenFocused(
+      focusNode: _priceFocusNode,
+      child: TextFormField(
+        focusNode: _priceFocusNode,
+        onSaved: (String value) {
           _formData['price'] = double.parse(value);
-      },
-      validator: (String value) {
-        if (value.isEmpty ||
-            !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
-          return 'Price is required and should be a number';
-        }
-      },
-      decoration: InputDecoration(labelText: 'Product price'),
-      keyboardType: TextInputType.number,
+        },
+        initialValue:
+            widget.product == null ? '' : widget.product['price'].toString(),
+        validator: (String value) {
+          if (value.isEmpty ||
+              !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
+            return 'Price is required and should be a number';
+          }
+        },
+        decoration: InputDecoration(labelText: 'Product price'),
+        keyboardType: TextInputType.number,
+      ),
     );
   }
 
@@ -70,7 +95,11 @@ class _ProductCreateState extends State<ProductCreatePage> {
       return;
     }
     _fromKey.currentState.save();
-    widget.addProduct(_formData);
+    if (widget.product == null) {
+      widget.addProduct(_formData);
+    } else {
+      widget.updateProduct(_formData, widget.productIndex);
+    }
     Navigator.pushReplacementNamed(context, '/products');
   }
 
@@ -79,7 +108,7 @@ class _ProductCreateState extends State<ProductCreatePage> {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     final double targetPadding = deviceWidth - targetWidth;
-    return GestureDetector(
+    final Widget pageContent = GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
@@ -106,5 +135,14 @@ class _ProductCreateState extends State<ProductCreatePage> {
         ),
       ),
     );
+
+    return widget.product == null
+        ? pageContent
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Editing ' + widget.product['title']),
+            ),
+            body: pageContent,
+          );
   }
 }

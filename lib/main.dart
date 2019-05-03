@@ -8,7 +8,7 @@ import 'pages/product.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
-  runApp(MyApp()); 
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -27,6 +27,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _updateProduct(Map<String, dynamic> product, int index) {
+    setState(() {
+      _products[index] = product;
+    });
+  }
+
   void _delProduct(int index) {
     setState(() {
       _products.removeAt(index);
@@ -42,11 +48,10 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.light,
           buttonColor: Colors.deepPurple),
       routes: {
-        '/': (BuildContext context) =>
-            AuthPage(),
-        '/prodcuts': (BuildContext context) =>
-            ProductsPage(_products),
-        '/admin': (BuildContext context) => ProductsAdminPage(_addProducts),
+        '/': (BuildContext context) => AuthPage(),
+        '/prodcuts': (BuildContext context) => ProductsPage(_products),
+        '/admin': (BuildContext context) => ProductsAdminPage(
+            _addProducts, _updateProduct, _delProduct, _products),
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> pathElements = settings.name.split('/');
@@ -63,8 +68,7 @@ class _MyAppState extends State<MyApp> {
       },
       onUnknownRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-          builder: (BuildContext context) =>
-              ProductsPage(_products),
+          builder: (BuildContext context) => ProductsPage(_products),
         );
       },
     );
