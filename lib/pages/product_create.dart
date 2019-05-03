@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import './../widgets/helpers/ensure-visible.dart';
+import '../models/product.dart';
 
 class ProductCreatePage extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
-  final Map<String, dynamic> product;
+  final Product product;
   final int productIndex;
 
   ProductCreatePage(
@@ -37,7 +38,7 @@ class _ProductCreateState extends State<ProductCreatePage> {
         onSaved: (String value) {
           _formData['title'] = value;
         },
-        initialValue: widget.product == null ? '' : widget.product['title'],
+        initialValue: widget.product == null ? '' : widget.product.title,
         validator: (String value) {
           if (value.isEmpty || value.length < 5) {
             return 'Title is required and should be 5+ chars long';
@@ -55,8 +56,7 @@ class _ProductCreateState extends State<ProductCreatePage> {
         onSaved: (String value) {
           _formData['description'] = value;
         },
-        initialValue:
-            widget.product == null ? '' : widget.product['description'],
+        initialValue: widget.product == null ? '' : widget.product.description,
         validator: (String value) {
           if (value.isEmpty || value.length < 10) {
             return 'Description is required and should be 10+ chars long';
@@ -77,7 +77,7 @@ class _ProductCreateState extends State<ProductCreatePage> {
           _formData['price'] = double.parse(value);
         },
         initialValue:
-            widget.product == null ? '' : widget.product['price'].toString(),
+            widget.product == null ? '' : widget.product.price.toString(),
         validator: (String value) {
           if (value.isEmpty ||
               !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
@@ -96,9 +96,17 @@ class _ProductCreateState extends State<ProductCreatePage> {
     }
     _fromKey.currentState.save();
     if (widget.product == null) {
-      widget.addProduct(_formData);
+      widget.addProduct(Product(
+          title: _formData['title'],
+          description: _formData['description'],
+          price: _formData['price'],
+          image: _formData['image']));
     } else {
-      widget.updateProduct(_formData, widget.productIndex);
+      widget.updateProduct(Product(
+          title: _formData['title'],
+          description: _formData['description'],
+          price: _formData['price'],
+          image: _formData['image']), widget.productIndex);
     }
     Navigator.pushReplacementNamed(context, '/products');
   }
@@ -140,7 +148,7 @@ class _ProductCreateState extends State<ProductCreatePage> {
         ? pageContent
         : Scaffold(
             appBar: AppBar(
-              title: Text('Editing ' + widget.product['title']),
+              title: Text('Editing ' + widget.product.title),
             ),
             body: pageContent,
           );

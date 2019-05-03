@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../widgets/ui_elements/title_default.dart';
+import '../models/product.dart';
 
 class ProductPage extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final Product product;
 
   ProductPage(this.product);
 
@@ -23,7 +24,7 @@ class ProductPage extends StatelessWidget {
           ),
         ),
         Text(
-          '\$ ' + product['price'].toString(),
+          '\$ ' + product.price.toString(),
           style: TextStyle(fontFamily: 'Oswald', color: Colors.grey),
         )
       ],
@@ -35,20 +36,20 @@ class ProductPage extends StatelessWidget {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(product['title'] + " Detail"),
+          title: Text(product.title + " Detail"),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset(product['image']),
+            Image.asset(product.image),
             Container(
               padding: EdgeInsets.all(10.0),
-              child: TitleDefault(product['title']),
+              child: TitleDefault(product.title),
             ),
             _buildAddressPriceRow(),
             Container(
               child: Text(
-                product['description'],
+                product.description,
                 textAlign: TextAlign.center,
               ),
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 6.0),
