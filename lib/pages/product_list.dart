@@ -4,35 +4,55 @@ import 'product_create.dart';
 class ProductListPage extends StatelessWidget {
   final List<Map<String, dynamic>> products;
   final Function updateProduct;
+  final Function delProducts;
 
-  ProductListPage(this.products, this.updateProduct);
+  ProductListPage(this.products, this.updateProduct, this.delProducts);
+
+  Widget _buildEditButton(BuildContext context, int index) {
+    return IconButton(
+      icon: Icon(Icons.edit),
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return ProductCreatePage(
+                product: products[index],
+                productIndex: index,
+                updateProduct: updateProduct,
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          leading: Image.asset(
-            products[index]['image'],
-            width: 60.0,
-            height: 70.0,
+        return Dismissible(
+          background: Container(
+            color: Colors.red,
           ),
-          title: Text(products[index]['title']),
-          trailing: IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return ProductCreatePage(
-                      product: products[index],
-                      productIndex: index,
-                      updateProduct: updateProduct,
-                    );
-                  },
+          onDismissed: (DismissDirection direction) {
+            if (direction == DismissDirection.endToStart) delProducts(index);
+          },
+          key: Key(index.toString()),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage(
+                    products[index]['image'],
+                  ),
                 ),
-              );
-            },
+                title: Text(products[index]['title']),
+                subtitle: Text('\$ ' + products[index]['price'].toString()),
+                trailing: _buildEditButton(context, index),
+              ),
+              Divider()
+            ],
           ),
         );
       },
